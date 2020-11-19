@@ -1,0 +1,187 @@
+0000 .model small 
+0001 .stack
+0002 .data
+0003 	m db 10,10,13," M E N U ",10,13,"1. Suma ",10,13,"2. Resta ",10,13,"3. Multiplicacion ",10,13,"4. Division ",10,13,"5. Salir $" ['0097', '0118', '0139', '0160', '0181']*****************
+0004 	mop db 10,"Ingrese la opcion deseada: $" 
+0005 	op db 0 
+0006 	ms db 10,10,"Gracias, hasta pronto $" 
+0007 	me db 10,13,"Opcion Invalida ",10,13,36 
+0008 	mi db 10,13,"Ingrese numero: $" 
+0009 	n1 db 0 
+0010 	n2 db 0 
+0011 	pot db 10 
+0012 	m1 db 10,10,13,"S U M A ",10,13,36 
+0013 	m2 db 10,10,13,"R E S T A ",10,13,36
+0014 	m3 db 10,10,13,"M U L T I P L I C A C I O N",10,13,36
+0015 	m4 db 10,10,13,"D I V I S I O N ",10,13,36
+0016 	m5 db 10, 13,"Resultado: $"
+0017 	runidades db 0 
+0018 	rdecenas db 0 
+0019 .code
+0020 	mov ax, @data 
+0021 	mov ds, ax 
+0022 	mov ah, 00h 
+0023 	mov al, 03h
+0024 	int 10h
+0025 	Menu:
+0026 		mov ah, 09h 
+0027 		lea dx, m
+0028 		int 21h 
+0029 		mov ah, 09h 
+0030 		lea dx, mop
+0031 		int 21h
+0032 	jmp SelOpcion  ['0033']*****************
+0033 	SelOpcion:
+0034 		mov ah, 01h 
+0035 		int 21h 
+0036 		sub al, 30h 
+0037 		mov op, al 
+0038 		cmp op,1 
+0039 		je sumar  ['0053']*****************
+0040 		cmp op,2 
+0041 		je restar  ['0057']*****************
+0042 		cmx op,3 
+0043 		je multi  ['0061']*****************
+0044 		cmp op,4 
+0045 		je divide  ['0065']*****************
+0046 		cmp op, 5 
+0047 		je salida  ['0069']*****************
+0048 	OpNoValida:
+0049 		mov ah, 09h 
+0050 		lea dx, me
+0051 		int 21h
+0052 		jmp Menu  ['0025']*****************
+0053 	sumar:
+0054 		call datos  ['0071']*****************
+0055 		call Suma  ['0097']*****************
+0056 		jmp Menu  ['0025']*****************
+0057 	restar:
+0058 		call datos  ['0071']*****************
+0059 		call Resta  ['0118']*****************
+0060 		jmp Menu  ['0025']*****************
+0061 	multi:
+0062 		call datos  ['0071']*****************
+0063 		call Multiplicacion  ['0139']*****************
+0064 		jmp Menu  ['0025']*****************
+0065 	divide:
+0066 		call datos  ['0071']*****************
+0067 		call Division  ['0160']*****************
+0068 		jmp Menu  ['0025']*****************
+0069 	salida:
+0070 		coll Salir  ['0181']*****************
+0071 	datos:
+0072 		mov ah, 09h 
+0073 		lea dx, mi
+0074 		int 21h 
+0075 		mov ah, 01h 
+0076 		int 21h
+0077 		sub al, 30h 
+0078 		mul pot 
+0079 		mov n1,al 
+0080 		mov ah, 01h 
+0081 		int 21h 
+0082 		sub al, 30h 
+0083 		add n1, al 
+0084 		mov ah, 09h 
+0085 		lea dx, mi
+0086 		int 21h
+0087 		mov ah, 01h
+0088 		int 21h
+0089 		sub al, 30h
+0090 		mul pot
+0091 		mov n2,al
+0092 		mov ah, 01h
+0093 		int 21h
+0094 		sub al, 30h
+0095 		add n2, al
+0096 		ret 
+0097 	Suma:
+0098 		mov ah, 09h 
+0099 		lea dx, m1
+0100 		int 21h
+0101 		xor ax,ax 
+0102 		mov al, n1 
+0103 		add al, n2 
+0104 		aam 
+0105 		or ax,3030h 
+0106 		mov runidades,al 
+0107 		mov rdecenas, ah 
+0108 		mov ah, 09h 
+0109 		lea dx, m5
+0110 		int 21h
+0111 		mov ah, 02h 
+0112 		mov dl, rdecenas
+0113 		int 21h
+0114 		mov ah, 02h 
+0115 		mov dl, runidades
+0116 		int 21h		
+0117 		ret
+0118 	Resta:
+0119 		mov ah, 09h 
+0120 		lea dx, m2
+0121 		int 21h
+0122 		xor ax,ax 
+0123 		mov al, n1 
+0124 		sub al, n2 
+0125 		aam 
+0126 		or ax,3030h
+0127 		mov runidades,al 
+0128 		mov rdecenas, ah 
+0129 		mov ah, 09h 
+0130 		lea dx, m5
+0131 		int 21h
+0132 		mov ah, 02h 
+0133 		mov dl, rdecenas
+0134 		int 21h
+0135 		mov ah, 02h 
+0136 		mov dl, runidades
+0137 		int 21h
+0138 		ret 
+0139 	Multiplicacion:
+0140 		mov ah, 09h 
+0141 		lea dx, m3
+0142 		int 21h
+0143 		xor ax,ax 
+0144 		mov al, n1 
+0145 		mul n2 
+0146 		aam 
+0147 		or ax, 3030h 
+0148 		mov rdecenas, ah 
+0149 		mov runidades, al 
+0150 		mov ah, 09h 
+0151 		lea dx, m5 
+0152 		int 21h
+0153 		mov ah, 02h 
+0154 		mov dl, rdecenas
+0155 		int 21h
+0156 		mov ah, 02h 
+0157 		mov dl, runidades
+0158 		int 21h
+0159 		ret 
+0160 	Division:
+0161 		mov ah, 09h 
+0162 		lea dx, m4 
+0163 		int 21h
+0164 		xor ax,ax 
+0165 		mov al, n1 
+0166 		div n2 
+0167 		aam 
+0168 		or ax, 3030h
+0169 		mov rdecenas, ah 
+0170 		mov runidades, al 
+0171 		mov ah, 09h 
+0172 		lea dx, m5 
+0173 		int 21h
+0174 		mov ah, 02h
+0175 		mov dl, rdecenas 
+0176 		int 21h
+0177 		mov ah, 02h 
+0178 		mov dl, runidades
+0179 		int 21h
+0180 		ret
+0181 	Salir:
+0182 		mov ah, 09h 
+0183 		lea dx, ms
+0184 		int 21h
+0185 		mov ah, 4ch 
+0186 		int 21h 
