@@ -83,6 +83,6 @@ def para():
                         j=j.split(" ")
                         print(j)
 
-print("xD")
+print("xD jaja")
 segData()
 para()
